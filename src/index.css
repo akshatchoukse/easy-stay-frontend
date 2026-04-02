@@ -69,6 +69,30 @@
   body {
     @apply bg-background text-foreground font-body antialiased;
     letter-spacing: 0.01em;
+    position: relative;
+  }
+
+  /* Premium Grain Overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.035;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: overlay;
+  }
+
+  * {
+    caret-color: transparent;
+  }
+
+  input, textarea, [contenteditable="true"] {
+    caret-color: auto;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -218,4 +242,49 @@
     0% { background-position: -200% center; }
     100% { background-position: 200% center; }
   }
+
+  /* New Global Hover Effects */
+  .hover-lift {
+    @apply transition-all duration-500 ease-out;
+  }
+  .hover-lift:hover {
+    @apply -translate-y-2;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-500;
+  }
+  .hover-glow:hover {
+    box-shadow: 0 0 40px hsl(var(--gold) / 0.15);
+  }
+
+  .hover-zoom-img {
+    @apply overflow-hidden;
+  }
+  .hover-zoom-img img {
+    @apply transition-transform duration-1000 ease-out;
+  }
+  .hover-zoom-img:hover img {
+    @apply scale-110 rotate-1;
+  }
+
+  /* Animated Underline for Links */
+  .link-underline {
+    @apply relative inline-block;
+  }
+  .link-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-[1px] bg-primary transition-all duration-500 ease-out;
+  }
+  .link-underline:hover::after {
+    @apply w-full;
+  }
+
+  /* Glassmorphism for Navbar items */
+  .nav-item-hover {
+    @apply px-4 py-2 rounded-full transition-all duration-500 hover:bg-white/5;
+  }
+
+  /* Custom Cursor (Optional, but user said "acha lage vahi lagana") */
+  /* I'll skip the custom cursor as it can be annoying, but I'll add cursor-pointer to everything interactive */
 }

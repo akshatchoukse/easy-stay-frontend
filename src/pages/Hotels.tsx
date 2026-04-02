@@ -1,9 +1,12 @@
 import { motion } from "framer-motion";
 import { Diamond } from "lucide-react";
-import { hotels } from "@/data/hotels";
+import { useHotels } from "@/hooks/useHotels";
 import HotelCard from "@/components/HotelCard";
+import SharedLoader from "@/components/SharedLoader";
 
 export default function Hotels() {
+  const { data: hotels, isLoading, isError } = useHotels();
+
   return (
     <div className="min-h-screen pt-28">
       <div className="section-padding max-w-7xl mx-auto">
@@ -27,11 +30,19 @@ export default function Hotels() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {hotels.map((hotel, i) => (
-            <HotelCard key={hotel.id} hotel={hotel} index={i} />
-          ))}
-        </div>
+        {isLoading ? (
+          <SharedLoader fullHeight />
+        ) : isError ? (
+          <div className="text-center py-20 text-muted-foreground">
+            Failed to load hotels. Please try again later.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {hotels?.map((hotel, i) => (
+              <HotelCard key={hotel.id} hotel={hotel} index={i} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,0 +1,21 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="black" />
+  
+  <circle cx="200" cy="200" r="180" fill="white" />
+  
+  <rect x="180" y="130" width="30" height="270" fill="black" />
+  
+  <path d="M180,140 
+           A65,65 0 1,0 180,270 
+           L180,350 
+           L150,350 
+           L150,270 
+           A95,95 0 0,1 180,140 Z" fill="black" />
+  
+  <path d="M210,140 
+           L280,165 
+           L280,335 
+           L210,360 Z" fill="black" />
+  
+  <circle cx="270" cy="250" r="5" fill="white" />
+</svg>

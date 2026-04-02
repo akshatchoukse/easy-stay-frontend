@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Phone, Star, ChevronLeft, Wifi, Car, Waves, UtensilsCrossed, Dumbbell, Sparkles, X, Diamond, CalendarIcon, Clock, Users } from "lucide-react";
-import { hotels } from "@/data/hotels";
+import { MapPin, Phone, Star, ChevronLeft, Wifi, Car, Waves, UtensilsCrossed, Dumbbell, Sparkles, X, Diamond, CalendarIcon, Clock, Users, Navigation } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchHotelById } from "@/lib/api";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import PhotoCarousel3D from "@/components/PhotoCarousel3D";
+import DynamicIcon from "@/components/DynamicIcon";
+import SharedLoader from "@/components/SharedLoader";
 
 const amenityIcons: Record<string, React.ReactNode> = {
   WiFi: <Wifi className="w-5 h-5" />,
@@ -20,11 +24,19 @@ const amenityIcons: Record<string, React.ReactNode> = {
 
 export default function HotelDetail() {
   const { id } = useParams();
-  const hotel = hotels.find((h) => h.id === id);
-  const [selectedImage, setSelectedImage] = useState(0);
+  const { data: hotel, isLoading, isError } = useQuery({
+    queryKey: ["hotel", id],
+    queryFn: () => fetchHotelById(id!),
+    enabled: !!id,
+  });
+  
   const [showEnquiry, setShowEnquiry] = useState(false);
 
-  if (!hotel) {
+  if (isLoading) {
+    return <SharedLoader fullHeight />;
+  }
+
+  if (isError || !hotel) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -45,35 +57,14 @@ export default function HotelDetail() {
           </Link>
         </motion.div>
 
-        {/* Gallery */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="mb-16">
-          <div className="relative h-[55vh] rounded-2xl overflow-hidden mb-4 group">
-            <img
-              src={hotel.images[selectedImage]}
-              alt={hotel.name}
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-[1.02]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-background/10" />
-            <div className="absolute bottom-6 left-6 z-10">
-              <div className="flex items-center gap-2 mb-2">
-                <Star className="w-4 h-4 text-primary fill-primary" />
-                <span className="text-sm font-medium text-foreground">{hotel.rating}</span>
-              </div>
-            </div>
-          </div>
-          <div className="grid grid-cols-4 gap-3">
-            {hotel.images.map((img, i) => (
-              <button
-                key={i}
-                onClick={() => setSelectedImage(i)}
-                className={`h-24 rounded-xl overflow-hidden border transition-all duration-500 ${
-                  selectedImage === i ? "border-primary/50 shadow-[0_0_20px_hsl(var(--gold)/0.15)]" : "border-transparent opacity-50 hover:opacity-80"
-                }`}
-              >
-                <img src={img} alt="" className="w-full h-full object-cover" />
-              </button>
-            ))}
-          </div>
+        {/* Dynamic Photo Gallery (3D Carousel) */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }} 
+          className="mb-16 -mx-6 md:-mx-12 lg:-mx-24"
+        >
+          <PhotoCarousel3D images={hotel.images} />
         </motion.div>
 
         {/* Content */}
@@ -92,34 +83,62 @@ export default function HotelDetail() {
             <div className="luxury-divider max-w-[200px]">
               <Diamond className="w-2.5 h-2.5 text-primary/30 flex-shrink-0" />
             </div>
-            <p className="text-muted-foreground leading-relaxed text-lg mb-14 font-light">{hotel.description}</p>
+            <p className="text-muted-foreground leading-relaxed text-lg mb-14 font-light whitespace-pre-wrap">{hotel.description}</p>
 
             {/* Amenities */}
             <h2 className="font-heading text-3xl font-light text-foreground mb-8 tracking-wide">Amenities</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-14">
-              {hotel.amenities.map((amenity) => (
-                <div key={amenity} className="glass-card p-5 flex items-center gap-3 group/amenity hover:border-primary/10 transition-all duration-500">
+              {hotel.amenities.map((amenity, idx) => (
+                <div key={idx} className="glass-card p-5 flex items-center gap-3 group/amenity hover:border-primary/10 transition-all duration-500">
                   <span className="text-primary/70 group-hover/amenity:text-primary transition-colors duration-500">
-                    {amenityIcons[amenity] || <Sparkles className="w-5 h-5" />}
+                    <DynamicIcon 
+                      iconName={amenity.icon} 
+                      className="w-5 h-5" 
+                      fallback={amenityIcons[amenity.name] || <Sparkles className="w-5 h-5" />}
+                    />
                   </span>
-                  <span className="text-sm text-foreground/80 font-light">{amenity}</span>
+                  <span className="text-sm text-foreground/80 font-light">{amenity.name}</span>
                 </div>
               ))}
             </div>
 
             {/* Map */}
-            <h2 className="font-heading text-3xl font-light text-foreground mb-8 tracking-wide">Location</h2>
-            <div className="rounded-2xl overflow-hidden border border-border/10 h-72">
-              <iframe
-                src={hotel.mapLink}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Hotel location"
-              />
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="font-heading text-3xl font-light text-foreground tracking-wide">Location</h2>
+              {hotel.mapLink && (
+                <a
+                  href={hotel.mapLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-xs luxury-label text-primary hover:tracking-widest transition-all duration-500"
+                >
+                  <Navigation className="w-3 h-3" /> Get Direction
+                </a>
+              )}
+            </div>
+            <div className="rounded-2xl overflow-hidden border border-border/10 h-80 bg-secondary/20 relative group">
+              {hotel.embedMapLink ? (
+                <iframe
+                  src={hotel.embedMapLink}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Hotel location"
+                />
+              ) : (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground p-10 text-center">
+                  <MapPin className="w-10 h-10 mb-4 opacity-20" />
+                  <p className="text-sm font-light">Map view not available for this property yet.</p>
+                  {hotel.mapLink && (
+                    <a href={hotel.mapLink} target="_blank" rel="noopener noreferrer" className="luxury-btn mt-6 scale-90">
+                      <span>View on Google Maps</span>
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </motion.div>
 
@@ -134,7 +153,7 @@ export default function HotelDetail() {
               <div className="text-center mb-8">
                 <span className="luxury-label">Starting from</span>
                 <div className="text-5xl font-heading font-light text-gradient-gold mt-3">
-                  ${hotel.pricePerNight}
+                  ₹{hotel.pricePerNight}
                 </div>
                 <span className="luxury-label mt-1 block">per night</span>
               </div>
@@ -142,7 +161,9 @@ export default function HotelDetail() {
               <div className="space-y-5 mb-8 py-6 border-y border-border/10">
                 <div className="flex items-center gap-4 text-sm">
                   <Phone className="w-4 h-4 text-primary/60" />
-                  <span className="text-foreground/80 font-light">{hotel.contactNumber}</span>
+                  <a href={`tel:${hotel.contactNumber}`} className="text-foreground/80 font-light hover:text-primary transition-colors duration-300">
+                    {hotel.contactNumber}
+                  </a>
                 </div>
                 <div className="flex items-center gap-4 text-sm">
                   <MapPin className="w-4 h-4 text-primary/60" />

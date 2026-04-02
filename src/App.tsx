@@ -11,16 +11,22 @@ import HotelDetail from "./pages/HotelDetail";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import ScrollToTop from "@/components/ScrollToTop";
+import Preloader from "@/components/Preloader";
+
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <Preloader />
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Navbar />
+
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/hotels" element={<Hotels />} />

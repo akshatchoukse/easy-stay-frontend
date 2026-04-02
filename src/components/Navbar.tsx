@@ -35,11 +35,12 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-24">
-        <Link to="/" className="group flex items-center gap-2">
-          <Diamond className="w-4 h-4 text-primary transition-transform duration-500 group-hover:rotate-45" />
-          <span className="font-heading text-2xl font-light text-foreground tracking-[0.15em]">
-            LUXURIA
-          </span>
+        <Link to="/" className="group flex items-center gap-3">
+          <img 
+            src="/logos/logo-dark-bg.png" 
+            alt="easy checkin" 
+            className="h-10 w-auto transition-transform duration-500 group-hover:scale-105"
+          />
         </Link>
 
         {/* Desktop */}
@@ -48,11 +49,12 @@ export default function Navbar() {
             <Link
               key={link.path}
               to={link.path}
-              className={`text-[11px] font-medium tracking-[0.2em] uppercase transition-all duration-500 relative ${
+              className={`text-[11px] font-medium tracking-[0.2em] uppercase transition-all duration-500 relative py-2 px-1 link-underline ${
                 location.pathname === link.path
-                  ? "text-primary"
+                  ? "text-primary pointer-events-none cursor-default"
                   : "text-muted-foreground hover:text-foreground"
               }`}
+              onClick={(e) => location.pathname === link.path && e.preventDefault()}
             >
               {link.name}
               {location.pathname === link.path && (
@@ -63,10 +65,11 @@ export default function Navbar() {
                 />
               )}
             </Link>
+
           ))}
           <Link
             to="/hotels"
-            className="luxury-btn text-[10px] !px-7 !py-2.5"
+            className="luxury-btn text-[10px] !px-7 !py-2.5 ml-4"
           >
             <span>Book Now</span>
           </Link>
@@ -96,11 +99,15 @@ export default function Navbar() {
                   key={link.path}
                   to={link.path}
                   className={`text-[11px] font-medium tracking-[0.2em] uppercase py-2 ${
-                    location.pathname === link.path ? "text-primary" : "text-muted-foreground"
+                    location.pathname === link.path 
+                      ? "text-primary pointer-events-none cursor-default" 
+                      : "text-muted-foreground"
                   }`}
+                  onClick={(e) => location.pathname === link.path && e.preventDefault()}
                 >
                   {link.name}
                 </Link>
+
               ))}
             </div>
           </motion.div>

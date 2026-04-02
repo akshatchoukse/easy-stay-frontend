@@ -1,13 +1,20 @@
 import { Suspense, lazy } from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, Sparkles, Diamond } from "lucide-react";
-import { hotels } from "@/data/hotels";
+import { useQuery } from "@tanstack/react-query";
+import { fetchHotels } from "@/lib/api";
 import HotelCard from "@/components/HotelCard";
 import Carousel3D from "@/components/Carousel3D";
+import SharedLoader from "@/components/SharedLoader";
 
 const HeroScene = lazy(() => import("@/components/HeroScene"));
 
 export default function Index() {
+  const { data: hotels, isLoading, isError } = useQuery({
+    queryKey: ["hotels"],
+    queryFn: fetchHotels,
+  });
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -40,7 +47,7 @@ export default function Index() {
               <span className="text-gradient-gold font-semibold italic">Meets Wonder</span>
             </h1>
             <p className="text-muted-foreground text-base md:text-lg max-w-lg mx-auto mb-12 leading-relaxed font-light">
-              Discover handpicked extraordinary hotels across the globe, curated for the most discerning travelers.
+              Discover handpicked extraordinary hotels across the Indore, curated for the most discerning travelers.
             </p>
             <motion.a
               href="#featured"
@@ -67,7 +74,7 @@ export default function Index() {
         <div className="absolute inset-0 bg-gradient-to-b from-card/30 to-transparent" />
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12 text-center relative z-10">
           {[
-            { label: "Luxury Hotels", value: "50+" },
+            { label: "Luxury Hotels", value: isLoading ? "..." : (hotels?.length || 0) + "+" },
             { label: "Countries", value: "25" },
             { label: "Happy Guests", value: "10K+" },
             { label: "Awards", value: "35" },
@@ -108,7 +115,11 @@ export default function Index() {
               <Diamond className="w-3 h-3 text-primary/40 flex-shrink-0" />
             </div>
           </motion.div>
-          <Carousel3D hotels={hotels} />
+          {hotels ? (
+            <Carousel3D hotels={hotels} />
+          ) : (
+            <SharedLoader />
+          )}
         </div>
       </section>
 
@@ -135,11 +146,19 @@ export default function Index() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {hotels.map((hotel, i) => (
-              <HotelCard key={hotel.id} hotel={hotel} index={i} />
-            ))}
-          </div>
+          {isLoading ? (
+            <SharedLoader />
+          ) : isError ? (
+            <div className="text-center py-20 text-muted-foreground">
+              Failed to load hotels. Please try again later.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {hotels?.map((hotel, i) => (
+                <HotelCard key={hotel.id} hotel={hotel} index={i} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

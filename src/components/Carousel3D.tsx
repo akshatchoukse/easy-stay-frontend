@@ -117,7 +117,7 @@ export default function Carousel3D({ hotels }: Carousel3DProps) {
                         <div className="flex items-center justify-between">
                           <div>
                             <span className="text-2xl font-heading font-light text-gradient-gold">
-                              ${hotel.pricePerNight}
+                              ₹{hotel.pricePerNight}
                             </span>
                             <span className="text-[10px] text-muted-foreground ml-1 uppercase tracking-wider">/ night</span>
                           </div>

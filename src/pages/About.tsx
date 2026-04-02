@@ -15,7 +15,7 @@ export default function About() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="text-center mb-16">
           <span className="luxury-label">Our Story</span>
           <h1 className="font-heading text-5xl md:text-7xl font-light mt-4 text-foreground tracking-wide">
-            About <span className="italic text-gradient-gold">Luxuria</span>
+            About <span className="italic text-gradient-gold">easy checkin</span>
           </h1>
           <div className="luxury-divider max-w-xs mx-auto">
             <Diamond className="w-3 h-3 text-primary/40 flex-shrink-0" />
@@ -29,7 +29,7 @@ export default function About() {
           className="max-w-3xl mx-auto text-center mb-24"
         >
           <p className="text-lg text-muted-foreground leading-relaxed mb-8 font-light">
-            Founded in 2010, Luxuria was born from a simple belief: every journey deserves an extraordinary place to call home. We've spent over a decade travelling the world, hand-selecting hotels that offer more than just a room — they offer an experience.
+            Founded in 2024, easy checkin was born from a simple belief: every journey deserves an effortless, extraordinary start. We've simplified the hospitality experience, hand-selecting hotels and streamlining the check-in process to ensure you spend more time enjoying your stay and less time at the front desk.
           </p>
           <p className="text-lg text-muted-foreground leading-relaxed font-light">
             Our team of travel connoisseurs personally visits and evaluates each property, ensuring that every hotel in our collection meets the highest standards of luxury, service, and character.
