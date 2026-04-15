@@ -14,9 +14,9 @@ export default function Footer() {
             <Link to="/" className="inline-block group mb-8">
               <motion.img 
                 whileHover={{ scale: 1.05 }}
-                src="/logos/logo-dark-bg.png" 
+                src="/logos/removedbg.png" 
                 alt="easy checkin" 
-                className="h-10 w-auto" 
+                className="h-10 w-auto md:h-12" 
               />
             </Link>
             <p className="text-muted-foreground max-w-sm leading-relaxed font-light text-base">

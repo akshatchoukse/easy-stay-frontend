@@ -50,7 +50,7 @@ export default function HotelDetail() {
 
   return (
     <PageReveal>
-      <div className="min-h-screen pt-28 pb-20" style={{ perspective: "2000px" }}>
+      <div className="min-h-screen pt-28 pb-20 overflow-x-hidden" style={{ perspective: "2000px" }}>
         <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
           {/* Back */}
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
@@ -64,7 +64,7 @@ export default function HotelDetail() {
             initial={{ opacity: 0, scale: 0.9, rotateX: 10 }} 
             animate={{ opacity: 1, scale: 1, rotateX: 0 }} 
             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }} 
-            className="mb-16 -mx-6 md:-mx-12 lg:-mx-24"
+            className="mb-16 -mx-6 md:-mx-12 lg:-mx-24 overflow-x-hidden"
           >
             <PhotoCarousel3D images={hotel.images} />
           </motion.div>
@@ -81,7 +81,7 @@ export default function HotelDetail() {
                 <MapPin className="w-3 h-3 text-primary/70" />
                 <span className="luxury-label">{hotel.city}</span>
               </div>
-              <h1 className="font-heading text-5xl md:text-7xl font-light text-foreground mb-8 tracking-wide leading-[1.1]">
+              <h1 className="font-heading text-4xl md:text-7xl font-light text-foreground mb-8 tracking-wide leading-[1.1]">
                 {hotel.name}
               </h1>
               <div className="luxury-divider max-w-[200px]">
@@ -175,15 +175,15 @@ export default function HotelDetail() {
               animate={{ opacity: 1, x: 0, rotateY: 0 }}
               transition={{ delay: 0.3, duration: 1, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="glass-card p-10 sticky top-32 gold-glow relative overflow-hidden group">
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-                
-                <div className="text-center mb-10">
-                  <span className="luxury-label mb-2 block">Starting from</span>
-                  <div className="text-6xl font-heading font-light text-gradient-gold mt-3 transition-transform duration-700 group-hover:scale-110 group-hover:tracking-tight">
-                    ₹{hotel.pricePerNight}
-                  </div>
+                <div className="glass-card p-6 md:p-10 sticky top-32 gold-glow relative overflow-hidden group">
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+                  
+                  <div className="text-center mb-10">
+                    <span className="luxury-label mb-2 block">Starting from</span>
+                    <div className="text-4xl md:text-6xl font-heading font-light text-gradient-gold mt-3 transition-transform duration-700 group-hover:scale-110 group-hover:tracking-tight">
+                      ₹{hotel.pricePerNight}
+                    </div>
                   <span className="luxury-label mt-2 block">per night</span>
                 </div>
 

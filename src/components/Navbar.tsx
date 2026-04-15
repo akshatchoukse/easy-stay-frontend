@@ -41,9 +41,9 @@ export default function Navbar() {
             transition={{ duration: 0.5 }}
           >
             <img 
-              src="/logos/logo-dark-bg.png" 
+              src="/logos/removedbg.png" 
               alt="easy checkin" 
-              className="h-10 w-auto"
+              className="h-10 w-auto md:h-12"
             />
           </motion.div>
         </Link>

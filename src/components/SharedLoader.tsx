@@ -20,12 +20,12 @@ export const SharedLoader = ({ fullHeight = false }: { fullHeight?: boolean }) =
         <motion.div
           animate={{ scale: [0.85, 1, 0.85] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="relative w-7 h-7 bg-white rounded-md flex items-center justify-center p-1.5 shadow-[0_0_10px_rgba(255,255,255,0.1)]"
+          className="relative w-10 h-10 flex items-center justify-center"
         >
           <img 
-            src="/logos/logo-icon.png" 
+            src="/logos/removedbg.png" 
             alt="EC" 
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(212,168,83,0.3)]"
           />
         </motion.div>
       </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface PhotoCarousel3DProps {
   images: string[];
@@ -9,6 +10,7 @@ interface PhotoCarousel3DProps {
 export default function PhotoCarousel3D({ images }: PhotoCarousel3DProps) {
   const [active, setActive] = useState(0);
   const total = images.length;
+  const isMobile = useIsMobile();
 
   // Auto rotate every 3 seconds
   useEffect(() => {
@@ -21,7 +23,13 @@ export default function PhotoCarousel3D({ images }: PhotoCarousel3DProps) {
 
   if (total === 0) return null;
 
-  const positions = [
+  const positions = isMobile ? [
+    { x: 0, z: 0, scale: 1, opacity: 1, rotateY: 0 },        // center
+    { x: 120, z: -80, scale: 0.8, opacity: 0.6, rotateY: -15 }, // right
+    { x: -120, z: -80, scale: 0.8, opacity: 0.6, rotateY: 15 }, // left
+    { x: 180, z: -150, scale: 0.6, opacity: 0.3, rotateY: -25 },  // far right
+    { x: -180, z: -150, scale: 0.6, opacity: 0.3, rotateY: 25 },  // far left
+  ] : [
     { x: 0, z: 0, scale: 1, opacity: 1, rotateY: 0 },        // center
     { x: 280, z: -100, scale: 0.8, opacity: 0.5, rotateY: -20 },  // right
     { x: -280, z: -100, scale: 0.8, opacity: 0.5, rotateY: 20 },  // left
@@ -40,10 +48,10 @@ export default function PhotoCarousel3D({ images }: PhotoCarousel3DProps) {
   };
 
   return (
-    <div className="relative w-full py-10">
+    <div className="relative w-full py-10 overflow-hidden">
       <div
         className="relative mx-auto flex items-center justify-center"
-        style={{ height: "450px", perspective: "1000px" }}
+        style={{ height: isMobile ? "300px" : "450px", perspective: "1000px" }}
       >
         {images.map((img, i) => {
           const style = getCardStyle(i);
@@ -71,7 +79,7 @@ export default function PhotoCarousel3D({ images }: PhotoCarousel3DProps) {
               onClick={() => setActive(i)}
             >
               <div
-                className={`relative w-[300px] md:w-[500px] h-[350px] md:h-[450px] rounded-3xl overflow-hidden transition-shadow duration-700 bg-transparent ${
+                className={`relative w-[260px] md:w-[500px] h-[300px] md:h-[450px] rounded-3xl overflow-hidden transition-shadow duration-700 bg-transparent ${
                   isActive
                     ? "shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
                     : "shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
@@ -80,7 +88,7 @@ export default function PhotoCarousel3D({ images }: PhotoCarousel3DProps) {
                 <img
                   src={img}
                   alt=""
-                  className="w-full h-full object-contain" // Keeps original resolution/aspect ratio
+                  className="w-full h-full object-cover" // Changed to object-cover for better 3D look
                   loading="lazy"
                 />
               </div>
@@ -93,7 +101,7 @@ export default function PhotoCarousel3D({ images }: PhotoCarousel3DProps) {
       <div className="flex items-center justify-center gap-6 mt-8">
         <button
           onClick={() => setActive((active - 1 + total) % total)}
-          className="w-12 h-12 rounded-full border border-border/20 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-500 bg-background/10 backdrop-blur-sm"
+          className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border/20 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-500 bg-background/10 backdrop-blur-sm"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -115,7 +123,7 @@ export default function PhotoCarousel3D({ images }: PhotoCarousel3DProps) {
 
         <button
           onClick={() => setActive((active + 1) % total)}
-          className="w-12 h-12 rounded-full border border-border/20 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-500 bg-background/10 backdrop-blur-sm"
+          className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border/20 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-500 bg-background/10 backdrop-blur-sm"
         >
           <ChevronRight className="w-5 h-5" />
         </button>

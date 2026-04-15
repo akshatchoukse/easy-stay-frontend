@@ -47,7 +47,7 @@ const Preloader = () => {
                                 className="z-10 p-4"
                             >
                                 <img 
-                                    src="/logos/logo-dark-bg copy.png" 
+                                    src="/logos/removedbg.png" 
                                     alt="Easy Checkin" 
                                     className="h-16 w-auto drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"
                                 />
