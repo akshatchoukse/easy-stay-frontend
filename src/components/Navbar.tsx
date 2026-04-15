@@ -36,44 +36,59 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-24">
         <Link to="/" className="group flex items-center gap-3">
-          <img 
-            src="/logos/logo-dark-bg.png" 
-            alt="easy checkin" 
-            className="h-10 w-auto transition-transform duration-500 group-hover:scale-105"
-          />
+          <motion.div
+            whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
+            transition={{ duration: 0.5 }}
+          >
+            <img 
+              src="/logos/logo-dark-bg.png" 
+              alt="easy checkin" 
+              className="h-10 w-auto"
+            />
+          </motion.div>
         </Link>
 
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-10">
           {navLinks.map((link) => (
-            <Link
+            <motion.div
               key={link.path}
-              to={link.path}
-              className={`text-[11px] font-medium tracking-[0.2em] uppercase transition-all duration-500 relative py-2 px-1 link-underline ${
-                location.pathname === link.path
-                  ? "text-primary pointer-events-none cursor-default"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-              onClick={(e) => location.pathname === link.path && e.preventDefault()}
+              whileHover={{ y: -2 }}
+              className="relative"
             >
-              {link.name}
-              {location.pathname === link.path && (
-                <motion.div
-                  layoutId="nav-indicator"
-                  className="absolute -bottom-1 left-0 right-0 h-px bg-primary"
-                  transition={{ duration: 0.3 }}
-                />
-              )}
-            </Link>
-
+              <Link
+                to={link.path}
+                className={`text-[11px] font-medium tracking-[0.2em] uppercase transition-all duration-500 relative py-2 px-1 link-underline ${
+                  location.pathname === link.path
+                    ? "text-primary pointer-events-none cursor-default"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                onClick={(e) => location.pathname === link.path && e.preventDefault()}
+              >
+                {link.name}
+                {location.pathname === link.path && (
+                  <motion.div
+                    layoutId="nav-indicator"
+                    className="absolute -bottom-1 left-0 right-0 h-px bg-primary shadow-[0_0_8px_rgba(212,168,83,0.8)]"
+                    transition={{ duration: 0.3 }}
+                  />
+                )}
+              </Link>
+            </motion.div>
           ))}
-          <Link
-            to="/hotels"
-            className="luxury-btn text-[10px] !px-7 !py-2.5 ml-4"
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <span>Book Now</span>
-          </Link>
+            <Link
+              to="/hotels"
+              className="luxury-btn text-[10px] !px-7 !py-2.5 ml-4"
+            >
+              <span>Book Now</span>
+            </Link>
+          </motion.div>
         </div>
+
 
         {/* Mobile toggle */}
         <button

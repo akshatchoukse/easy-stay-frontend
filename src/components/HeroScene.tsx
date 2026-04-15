@@ -1,30 +1,55 @@
-import { useRef, useMemo } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef, useMemo, useState, useEffect } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Float, Stars, MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
 function HotelBuilding() {
   const groupRef = useRef<THREE.Group>(null);
+  const { mouse } = useThree();
+  const [entryScale, setEntryScale] = useState(0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setEntryScale(1), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   useFrame((state) => {
     if (groupRef.current) {
+      // Base rotation/floating
       groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.2) * 0.15;
-      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
+      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.1 - 0.5;
+      
+      // Mouse Parallax
+      groupRef.current.rotation.y += mouse.x * 0.2;
+      groupRef.current.rotation.x = -mouse.y * 0.1;
+      
+      // Entry scale animation
+      groupRef.current.scale.setScalar(THREE.MathUtils.lerp(groupRef.current.scale.x, entryScale, 0.05));
     }
   });
 
   const windowMaterial = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#d4a853", emissive: "#d4a853", emissiveIntensity: 0.8, transparent: true, opacity: 0.9 }),
+    () => new THREE.MeshStandardMaterial({ 
+      color: "#d4a853", 
+      emissive: "#d4a853", 
+      emissiveIntensity: 0.8, 
+      transparent: true, 
+      opacity: 0.9 
+    }),
     []
   );
 
   const buildingMaterial = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#1a1f2e", metalness: 0.3, roughness: 0.7 }),
+    () => new THREE.MeshStandardMaterial({ 
+      color: "#1a1f2e", 
+      metalness: 0.3, 
+      roughness: 0.7 
+    }),
     []
   );
 
   return (
-    <group ref={groupRef} position={[0, -0.5, 0]}>
+    <group ref={groupRef} position={[0, -0.5, 0]} scale={0}>
       {/* Main building */}
       <mesh position={[0, 1.5, 0]} material={buildingMaterial}>
         <boxGeometry args={[2, 3, 1.2]} />
@@ -72,8 +97,8 @@ function HotelBuilding() {
       </mesh>
       {/* Ground */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-        <planeGeometry args={[8, 6]} />
-        <meshStandardMaterial color="#0d1117" metalness={0.1} roughness={0.9} />
+        <planeGeometry args={[15, 15]} />
+        <meshStandardMaterial color="#0a0e17" metalness={0.1} roughness={0.9} transparent opacity={0.5} />
       </mesh>
     </group>
   );
@@ -81,23 +106,31 @@ function HotelBuilding() {
 
 function GoldenOrbs() {
   const orbsRef = useRef<THREE.Group>(null);
+  const { mouse } = useThree();
 
   useFrame((state) => {
     if (orbsRef.current) {
-      orbsRef.current.rotation.y = state.clock.elapsedTime * 0.05;
+      orbsRef.current.rotation.y = state.clock.elapsedTime * 0.05 + mouse.x * 0.5;
+      orbsRef.current.rotation.x = mouse.y * 0.2;
     }
   });
 
   return (
     <group ref={orbsRef}>
-      {[...Array(5)].map((_, i) => {
-        const angle = (i / 5) * Math.PI * 2;
-        const radius = 4;
+      {[...Array(8)].map((_, i) => {
+        const angle = (i / 8) * Math.PI * 2;
+        const radius = 5 + Math.sin(i) * 2;
         return (
-          <Float key={i} speed={1 + i * 0.5} rotationIntensity={0.5} floatIntensity={1}>
-            <mesh position={[Math.cos(angle) * radius, Math.sin(angle) * 1.5, Math.sin(angle) * radius]}>
-              <sphereGeometry args={[0.08 + i * 0.02, 16, 16]} />
-              <MeshDistortMaterial color="#d4a853" emissive="#d4a853" emissiveIntensity={0.5} distort={0.3} speed={2} />
+          <Float key={i} speed={1 + i * 0.3} rotationIntensity={1} floatIntensity={2}>
+            <mesh position={[Math.cos(angle) * radius, Math.sin(angle * 2) * 2, Math.sin(angle) * radius]}>
+              <sphereGeometry args={[0.08 + Math.random() * 0.05, 16, 16]} />
+              <MeshDistortMaterial 
+                color="#d4a853" 
+                emissive="#d4a853" 
+                emissiveIntensity={0.8} 
+                distort={0.4} 
+                speed={2.5} 
+              />
             </mesh>
           </Float>
         );
@@ -110,19 +143,20 @@ export default function HeroScene() {
   return (
     <div className="absolute inset-0 z-0">
       <Canvas
-        camera={{ position: [0, 2, 6], fov: 50 }}
+        camera={{ position: [0, 2, 7], fov: 45 }}
         gl={{ antialias: true, alpha: true }}
-        dpr={[1, 1.5]}
+        dpr={[1, 2]}
       >
-        <fog attach="fog" args={["#0a0e17", 5, 15]} />
-        <ambientLight intensity={0.3} />
-        <directionalLight position={[5, 5, 5]} intensity={0.8} color="#ffffff" />
-        <pointLight position={[0, 4, 2]} intensity={1} color="#d4a853" distance={10} />
-        <pointLight position={[-3, 2, -2]} intensity={0.5} color="#4a6fa5" distance={8} />
-        <Stars radius={50} depth={50} count={1000} factor={3} saturation={0} fade speed={1} />
+        <fog attach="fog" args={["#0a0e17", 5, 20]} />
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
+        <pointLight position={[0, 5, 2]} intensity={2} color="#d4a853" distance={15} />
+        <pointLight position={[-5, 2, -5]} intensity={1} color="#4a6fa5" distance={12} />
+        <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={1.5} />
         <HotelBuilding />
         <GoldenOrbs />
       </Canvas>
     </div>
   );
 }
+
